@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
-
+def get_image_path(instance, file):
+    return f'photos/perevall-{instance.perevall.id}/{file}'
 
 ACTIVITIES = [
     ('foot', 'пеший'),
@@ -39,7 +40,7 @@ LEVELS = [
 class Users(models.Model):
 
     mail = models.EmailField('почта', unique=True)
-    phone = models.IntegerField('телефон', max_length=12)
+    phone = models.IntegerField('телефон')
     name = models.CharField('имя', max_length=30)
     surname = models.CharField('фамилия', max_length=30)
     otch = models.CharField('отчество', max_length=30)
@@ -52,7 +53,7 @@ class Coords(models.Model):
 
     latitude = models.FloatField('широта', max_length=9, blank=True)
     longitude = models.FloatField('долгота', max_length=9, blank=True)
-    height = models.IntegerField('высота', max_length=5, blank=True)
+    height = models.IntegerField('высота', blank=True)
 
 
 class Images(models.Model):
@@ -79,7 +80,7 @@ class PerevalAdded(models.Model):
 
 class PerevalAreas(models.Model):
 
-    id_parent = models.IntegerField(max_length=8, blank=True)
+    id_parent = models.IntegerField(blank=True)
     title = models.TextField()
 
 
