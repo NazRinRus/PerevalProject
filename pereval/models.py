@@ -56,9 +56,7 @@ class Coords(models.Model):
     height = models.IntegerField('высота', blank=True)
 
 
-class Images(models.Model):
-    name = models.CharField(max_length=50)
-    photos = models.ImageField('Фото', upload_to=get_image_path, blank=True, null=True)
+
 
 
 class PerevalAdded(models.Model):
@@ -69,7 +67,6 @@ class PerevalAdded(models.Model):
     other_titles = models.CharField('иные названия', max_length=50)
     connect = models.CharField('соединение', max_length=250)
     add_time = models.DateTimeField(default=timezone.now, editable=False)
-    images = models.ForeignKey(Images, on_delete=models.CASCADE, default=0)
     coord_id = models.OneToOneField(Coords, on_delete=models.CASCADE)
     winter_lvl = models.CharField('зима', max_length=2, choices=LEVELS)
     summer_lvl = models.CharField('лето', max_length=2, choices=LEVELS)
@@ -77,6 +74,11 @@ class PerevalAdded(models.Model):
     spring_lvl = models.CharField('весна', max_length=2, choices=LEVELS)
     author = models.ForeignKey(Users, on_delete=models.CASCADE)
 
+
+class Images(models.Model):
+    name = models.CharField(max_length=50)
+    photos = models.ImageField('Фото', upload_to=get_image_path, blank=True, null=True)
+    pereval = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE, default=0)
 
 class PerevalAreas(models.Model):
 
