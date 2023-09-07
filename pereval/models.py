@@ -40,7 +40,7 @@ LEVELS = [
 class Users(models.Model):
 
     mail = models.EmailField('почта', unique=True)
-    phone = models.IntegerField('телефон')
+    phone = models.CharField('телефон', max_length=15)
     name = models.CharField('имя', max_length=30)
     surname = models.CharField('фамилия', max_length=30)
     otch = models.CharField('отчество', max_length=30)

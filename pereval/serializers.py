@@ -12,7 +12,7 @@ class UsersSerializer(serializers.ModelSerializer):
         model = Users
         fields = ('mail', 'phone', 'name', 'surname', 'otch')
 
-class UsersSerializer(serializers.ModelSerializer):
+class ImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
         fields = ('name', 'photos')

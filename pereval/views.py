@@ -7,4 +7,16 @@ class PerevalAddedListAPIView(generics.ListCreateAPIView):
     queryset = PerevalAdded.objects.all()
     serializer_class = PerevalAddedSerializer
 
+class UsersListAPIView(generics.ListCreateAPIView):
+    queryset = Users.objects.all()
+    serializer_class = UsersSerializer
+
+class ImagesListAPIView(generics.ListCreateAPIView):
+    queryset = Images.objects.all()
+    serializer_class = ImagesSerializer
+
+class CoordsListAPIView(generics.ListCreateAPIView):
+    queryset = Coords.objects.all()
+    serializer_class = CoordsSerializer
+
 # Create your views here.
