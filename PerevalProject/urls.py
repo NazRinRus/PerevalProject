@@ -21,11 +21,12 @@ from pereval.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/perevaladded/', PerevalAddedListAPIView.as_view()),
-    path('api/v1/perevaladded/<int:pk>', PerevalAddedListAPIView.as_view()),
+    path('api/v1/perevaladdeddetail/<int:pk>', PerevalAddedDetailAPIView.as_view()),
     path('api/v1/users/', UsersListAPIView.as_view()),
-    path('api/v1/users/<int:pk>', UsersListAPIView.as_view()),
+    path('api/v1/usersdetail/<int:pk>', UserDetailAPIView.as_view()),
     path('api/v1/images/', ImagesListAPIView.as_view()),
-    path('api/v1/images/<int:pk>', ImagesListAPIView.as_view()),
+    path('api/v1/imagesdetail/<int:pk>', ImagesDetailAPIView.as_view()),
     path('api/v1/coords/', CoordsListAPIView.as_view()),
-    path('api/v1/coords/<int:pk>', CoordsListAPIView.as_view()),
+    path('api/v1/coordsdetail/<int:pk>', CoordsDetailAPIView.as_view()),
+
 ]
