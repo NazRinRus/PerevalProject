@@ -46,8 +46,8 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
 
         if images:
             for imag in images:
-                name = imag.pop('title')
-                photos = photos.pop('data')
+                name = imag.pop('name')
+                photos = photos.pop('photos')
                 Images.objects.create(perevall=perevall, name=name, photo=photos)
         return perevall
 

@@ -8,7 +8,7 @@
   "user": {"email": "qwerty@mail.ru",
         "fam": "Пупкин",
 		 "name": "Василий",
-		 "otc": "Иванович",
+		 "otch": "Иванович",
         "phone": "+7 555 55 55"},
 
    "coords":{
