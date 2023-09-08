@@ -25,7 +25,7 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
     class Meta:
         model = PerevalAdded
         fields = ('status', 'beautyTitle', 'title', 'other_titles', 'connect', 'add_time', 'coord_id',
-                  'winter_lvl', 'summer_lvl', 'autumn_lvl', 'spring_lvl', 'user', 'images')
+                  'winter', 'summer', 'autumn', 'spring', 'user', 'images')
 
     def create(self, validated_data):
         # разбиваем словарь validated_data на таблицы

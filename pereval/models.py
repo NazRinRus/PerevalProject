@@ -68,10 +68,10 @@ class PerevalAdded(models.Model):
     connect = models.CharField('соединение', max_length=250)
     add_time = models.DateTimeField(default=timezone.now, editable=False)
     coord_id = models.OneToOneField(Coords, on_delete=models.CASCADE)
-    winter_lvl = models.CharField('зима', max_length=2, choices=LEVELS)
-    summer_lvl = models.CharField('лето', max_length=2, choices=LEVELS)
-    autumn_lvl = models.CharField('осень', max_length=2, choices=LEVELS)
-    spring_lvl = models.CharField('весна', max_length=2, choices=LEVELS)
+    winter = models.CharField('зима', max_length=2, choices=LEVELS)
+    summer = models.CharField('лето', max_length=2, choices=LEVELS)
+    autumn = models.CharField('осень', max_length=2, choices=LEVELS)
+    spring = models.CharField('весна', max_length=2, choices=LEVELS)
     author = models.ForeignKey(Users, on_delete=models.CASCADE)
 
 
