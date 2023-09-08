@@ -19,13 +19,13 @@ class CoordsSerializer(serializers.ModelSerializer):
         fields = ('latitude', 'longitude', 'height')
 
 class PerevalAddedSerializer(serializers.ModelSerializer):
-    user1 = UsersSerializer()
+    user = UsersSerializer()
     coord_id = CoordsSerializer()
     images = ImagesSerializer(many=True)
     class Meta:
         model = PerevalAdded
         fields = ('status', 'beautyTitle', 'title', 'other_titles', 'connect', 'add_time', 'coord_id',
-                  'winter_lvl', 'summer_lvl', 'autumn_lvl', 'spring_lvl', 'author', 'images')
+                  'winter_lvl', 'summer_lvl', 'autumn_lvl', 'spring_lvl', 'user', 'images')
 
     def create(self, validated_data):
         # разбиваем словарь validated_data на таблицы
