@@ -20,7 +20,7 @@ class CoordsSerializer(serializers.ModelSerializer):
 
 class PerevalAddedSerializer(serializers.ModelSerializer):
     user1 = UsersSerializer()
-    coords = CoordsSerializer()
+    coord_id = CoordsSerializer()
     images = ImagesSerializer(many=True)
     class Meta:
         model = PerevalAdded
@@ -46,8 +46,8 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
 
         if images:
             for imag in images:
-                name = imag.pop(name)
-                photos = photos.pop(photos)
+                name = imag.pop('title')
+                photos = photos.pop('data')
                 Images.objects.create(perevall=perevall, name=name, photo=photos)
         return perevall
 
