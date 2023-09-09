@@ -21,7 +21,7 @@ class CoordsSerializer(serializers.ModelSerializer):
 class PerevalAddedSerializer(serializers.ModelSerializer):
     user = UsersSerializer()
     coord_id = CoordsSerializer()
-    images = ImagesSerializer(many=True)
+    images = ImagesSerializer()#many=True
     class Meta:
         model = PerevalAdded
         fields = ('status', 'beautyTitle', 'title', 'other_titles', 'connect', 'add_time', 'coord_id',
@@ -30,10 +30,10 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # разбиваем словарь validated_data на таблицы
         user = validated_data.pop('user')
-        coords = validated_data.pop('coords')
+        coords = validated_data.pop('coord_id')
         images = validated_data.pop('images')
         # Создаем нового автора или возвращаем модель существующего
-        current_user = Users.objects.filter(mail=user['email'])
+        current_user = Users.objects.filter(mail=user['mail'])
         if current_user.exists():
             user_serializers = UsersSerializer(data=user)
             user_serializers.is_valid(raise_exception=True)
@@ -41,13 +41,12 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
         else:
             user = Users.objects.create(**user)
         coords = Coords.objects.create(**coords)
-        perevall = PerevalAdded.objects.create(**validated_data, images=images, author=user,
-                                               coords=coords)
+        pereval_new = PerevalAdded.objects.create(**validated_data, images=images, author=user, coord_id=coords)
 
         if images:
-            for imag in images:
-                name = imag.pop('name')
-                photos = photos.pop('photos')
-                Images.objects.create(perevall=perevall, name=name, photo=photos)
-        return perevall
+            # for imag in images:
+            #     name = imag.pop('name')
+            #     photos = photos.pop('photos')
+            Images.objects.create(pereval=pereval_new, name=images['name'], photos=images['photos'])
+        return pereval_new
 

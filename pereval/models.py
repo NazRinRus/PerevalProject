@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 def get_image_path(instance, file):
-    return f'photos/perevall-{instance.perevall.id}/{file}'
+    return f'photos/pereval_new-{instance.pereval_new.id}/{file}'
 
 ACTIVITIES = [
     ('foot', 'пеший'),
