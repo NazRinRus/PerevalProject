@@ -19,8 +19,8 @@ class CoordsSerializer(serializers.ModelSerializer):
         fields = ('latitude', 'longitude', 'height')
 
 class PerevalAddedSerializer(serializers.ModelSerializer):
-    user = UsersSerializer()
-    coord_id = CoordsSerializer()
+    user = UsersSerializer(required=False)
+    coord_id = CoordsSerializer(required=False)
     images = ImagesSerializer()#many=True
     class Meta:
         model = PerevalAdded
@@ -44,10 +44,10 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
         pereval_new = PerevalAdded.objects.create(**validated_data, images=images, author=user, coord_id=coords)
 
         if images:
-            # for imag in images:
-            #     name = imag.pop('name')
-            #     photos = photos.pop('photos')
-            Images.objects.create(pereval=pereval_new, name=images['name'], photos=images['photos'])
+            for imag in images:
+                name = imag.pop('name')
+                photos = photos.pop('photos')
+                Images.objects.create(pereval=pereval_new, name=name, photos=photos)
         return pereval_new
 
     def validate(self, data):
