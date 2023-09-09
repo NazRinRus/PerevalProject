@@ -1,0 +1,24 @@
+{
+  "beautyTitle": "poss",
+  "title": "Пхия",
+  "other_titles": "Триев",
+  "connect": "нет",
+    "winter": "",
+  "summer": "1A",
+  "autumn": "1A",
+  "spring": "",
+
+
+  "add_time": "2021-09-22 13:18:13",
+  "user": {"mail": "qwerty@mail.ru",
+        "surname": "Пупкин",
+		 "name": "Василий",
+		 "otch": "Иванович",
+        "phone": "+7 555 55 55"},
+
+   "coords":{
+  "latitude": "45.3842",
+  "longitude": "7.1525",
+  "height": "1200"},
+
+  "images": {"photos":"/home/nazrinrus/Рабочий стол/фото для перевала/%D0%9E%D0%B7%D0%B5%D1%80%D0%BE.jpg", "name":"Седловина"}
