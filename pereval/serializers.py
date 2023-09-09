@@ -50,3 +50,22 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
             Images.objects.create(pereval=pereval_new, name=images['name'], photos=images['photos'])
         return pereval_new
 
+    def validate(self, data):
+        if self.instance is not None:
+            instance_user = self.instance.user
+            data_user = data.get('user')
+            user_fields_for_validation = [
+                instance_user.surname != data_user['surname'],
+                instance_user.name != data_user['name'],
+                instance_user.otch != data_user['otch'],
+                instance_user.phone != data_user['phone'],
+                instance_user.mail != data_user['mail'],
+            ]
+            if data_user is not None and any(user_fields_for_validation):
+                raise serializers.ValidationError(
+                    {
+                        'Отказано': 'Данные пользователя не могут быть изменены',
+                    }
+                )
+        return data
+
