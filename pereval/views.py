@@ -51,7 +51,7 @@ class ImagesViewSet(viewsets.ModelViewSet):
     queryset = Images.objects.all()
     serializer_class = ImagesSerializer
 
-class PervalImagesViewSet(viewsets.ModelViewSet):
+class PerevalImagesViewSet(viewsets.ModelViewSet):
     queryset = PerevalImages.objects.all()
     serializer_class = PerevalImagesSerializer
 
