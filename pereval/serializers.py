@@ -26,7 +26,7 @@ class CoordsSerializer(serializers.ModelSerializer):
 class PerevalAddedSerializer(serializers.ModelSerializer):
     user = UsersSerializer(required=False)
     coord_id = CoordsSerializer(required=False)
-    images = ImagesSerializer()#many=True
+    images = ImagesSerializer()#many=True, required=True
     class Meta:
         model = PerevalAdded
         fields = ('status', 'beautyTitle', 'title', 'other_titles', 'connect', 'add_time', 'coord_id',
