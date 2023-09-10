@@ -20,7 +20,7 @@ from pereval.views import *
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register('perevaladded', PerevalAddedViewSet)
+router.register('submitData', PerevalAddedViewSet)
 router.register('users', UsersViewSet)
 router.register('coords', CoordViewSet)
 router.register('images', ImagesViewSet)
