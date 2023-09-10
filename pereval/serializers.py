@@ -11,8 +11,7 @@ class UsersSerializer(serializers.ModelSerializer):
 class ImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
-        fields = ('name', 'photos', 'pereval')
-
+        fields = ('name', 'photos')
 # Сериализер таблицы содержащей ссылки на оббъект таблицы Перевал и Фотографии
 class PerevalImagesSerializer(serializers.ModelSerializer):
     class Meta:
