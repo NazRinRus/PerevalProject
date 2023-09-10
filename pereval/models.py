@@ -80,7 +80,7 @@ class Images(models.Model):
     photos = models.ImageField('Фото', upload_to=get_image_path, blank=True, null=True)# объект фотографии
 
 #таблица объединяющая объекты таблиц Перевал и Фотографии
-class Pereval_Images(models.Model):
+class PerevalImages(models.Model):
     pereval = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE, default=0)  # ссылка на объект локации
     images = models.ForeignKey(Images, on_delete=models.CASCADE, default=0)  # ссылка на объект фотографии
 
@@ -89,8 +89,3 @@ class PerevalAreas(models.Model):
 
     id_parent = models.IntegerField(blank=True)
     title = models.TextField()
-
-
-class PerevalImages(models.Model):
-    id_pereval = models.ForeignKey(PerevalAreas, on_delete=models.CASCADE, default=0)
-    id_images = models.ForeignKey(Images, on_delete=models.CASCADE, default=0)

@@ -13,6 +13,12 @@ class ImagesSerializer(serializers.ModelSerializer):
         model = Images
         fields = ('name', 'photos', 'pereval')
 
+# Сериализер таблицы содержащей ссылки на оббъект таблицы Перевал и Фотографии
+class PerevalImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PerevalImages
+        fields = ('pereval', 'images')
+
 class CoordsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coords
@@ -40,14 +46,18 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
             user = user_serializers.save()
         else:
             user = Users.objects.create(**user)
+
         coords = Coords.objects.create(**coords)
+
         pereval_new = PerevalAdded.objects.create(**validated_data, images=images, author=user, coord_id=coords)
 
         if images:
             for imag in images:
                 name = imag.pop('name')
                 photos = photos.pop('photos')
-                Images.objects.create(pereval=pereval_new, name=name, photos=photos)
+                img_new = Images.objects.create(name=name, photos=photos)
+                PerevalImages.objects.create(pereval=pereval_new, images=img_new)
+
         return pereval_new
 
     def validate(self, data):
