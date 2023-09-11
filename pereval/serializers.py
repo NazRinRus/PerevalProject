@@ -9,6 +9,7 @@ class UsersSerializer(serializers.ModelSerializer):
         fields = ('mail', 'phone', 'name', 'surname', 'otch')
 
 class ImagesSerializer(serializers.ModelSerializer):
+    photos = serializers.CharField()
     class Meta:
         model = Images
         fields = ('name', 'photos')
@@ -26,7 +27,7 @@ class CoordsSerializer(serializers.ModelSerializer):
 class PerevalAddedSerializer(serializers.ModelSerializer):
     user = UsersSerializer(required=False)
     coord_id = CoordsSerializer(required=False)
-    images = ImagesSerializer()#many=True, required=True
+    images = ImagesSerializer(required=False, many=True)
     class Meta:
         model = PerevalAdded
         fields = ('status', 'beautyTitle', 'title', 'other_titles', 'connect', 'add_time', 'coord_id',
