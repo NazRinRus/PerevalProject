@@ -48,14 +48,11 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
 
         coords = Coords.objects.create(**coords)
 
-        pereval_new = PerevalAdded.objects.create(**validated_data, images=images, author=user, coord_id=coords)
+        pereval_new = PerevalAdded.objects.create(**validated_data, author=user, coord_id=coords)
 
         if images:
-            for imag in images:
-                name = imag.pop('name')
-                photos = photos.pop('photos')
-                img_new = Images.objects.create(name=name, photos=photos)
-                PerevalImages.objects.create(pereval=pereval_new, images=img_new)
+            img_new = Images.objects.create(**images)
+            PerevalImages.objects.create(pereval=pereval_new, images=img_new)
 
         return pereval_new
 

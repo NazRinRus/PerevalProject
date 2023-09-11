@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 def get_image_path(instance, file): # прописываю путь сохранения изображений, у каждой записи PerevalAdded своя папка
-    return f'photos/pereval-{instance.pereval.id}/{file}'
+    return f'photos/pereval-{instance.pereval_new.id}/{file}'
 
 # Активность - способ прохождения локации, вывел в список кортежей
 ACTIVITIES = [
