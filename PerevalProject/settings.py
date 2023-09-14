@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pereval',
     'rest_framework',
+    'django_filters'
 ]
 
 SITE_ID = 1
