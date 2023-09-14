@@ -1,8 +1,10 @@
+import django_filters
+from rest_framework.response import Response
 from django.shortcuts import render
 from rest_framework import generics
 from .models import *
 from .serializers import *
-from  rest_framework import viewsets
+from  rest_framework import viewsets, status
 
 # сериализеры для работы с данными таблиц, просмотр, добавление, удаление
 class PerevalAddedListAPIView(generics.ListCreateAPIView):# сериализер для работы с таблицей перевалов, просмотр, добавление
@@ -42,6 +44,76 @@ class CoordsDetailAPIView(generics.RetrieveUpdateDestroyAPIView):# универ�
 class PerevalAddedViewSet(viewsets.ModelViewSet):
     queryset = PerevalAdded.objects.all()
     serializer_class = PerevalAddedSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = ('author__mail',)
+    http_method_names = ['get', 'post', 'head', 'patch', 'options']
+
+    # переопределяю метод, для вывода сообщения о результатах сохранения данных
+    def create(self, request, *args, **kwargs):
+        serializer = PerevalAddedSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    'status': status.HTTP_200_OK,
+                    'message': 'Выполнено',
+                    'id': serializer.data['id']
+                }
+            )
+        if status.HTTP_400_BAD_REQUEST:
+            return Response(
+                {
+                    'status': status.HTTP_400_BAD_REQUEST,
+                    'message': 'не выполнено',
+                    'id': None
+                }
+            )
+        if status.HTTP_500_INTERNAL_SERVER_ERROR:
+            return Response(
+                {
+                    'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    'message': 'Ошибка при выполнении операции',
+                    'id': None
+                }
+            )
+
+    # даем возможность частично изменять перевал
+    def partial_update(self, request, *args, **kwargs):
+        pereval_new = self.get_object()
+        if pereval_new.status == 'new':
+            serializer = PerevalAddedSerializer(pereval_new, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {
+                        'state': '1',
+                        'message': 'Изменения успешно внесены'
+                    }
+                )
+            else:
+                return Response(
+                    {
+                        'state': '0',
+                        'message': serializer.errors
+                    }
+                )
+        else:
+            return Response(
+                {
+                    'state': '0',
+                    'message': f'Текущий статус: {pereval_new.get_status_display()}, данные не могут быть изменены!'
+                }
+            )
+
+    def get_queryset(self):
+        queryset = PerevalAdded.objects.all()
+        pereval_id = self.request.query_params.get('pereval_id', None)
+        user_id = self.request.query_params.get('user_id', None)
+        if pereval_id is not None:
+           queryset = queryset.filter(author__pereval_id=pereval_id)
+        if user_id is not None:
+            queryset = queryset.filter(author_id=user_id)
+            return queryset
 
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
@@ -51,9 +123,6 @@ class ImagesViewSet(viewsets.ModelViewSet):
     queryset = Images.objects.all()
     serializer_class = ImagesSerializer
 
-class PerevalImagesViewSet(viewsets.ModelViewSet):
-    queryset = PerevalImages.objects.all()
-    serializer_class = PerevalImagesSerializer
 
 class CoordViewSet(viewsets.ModelViewSet):
     queryset = Coords.objects.all()

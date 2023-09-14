@@ -7,37 +7,63 @@ class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = ('mail', 'phone', 'name', 'surname', 'otch')
+    # при сохранении пользователя, проверяем по емайлу его наличие в БД, если есть то возвращаем уже сохраненного, инача сохраняем нового
+    def save(self, **kwargs):
+        self.is_valid()
+        user = Users.objects.filter(mail=self.validated_data.get('mail'))
+        if user.exists():
+            return user.first()
+        else:
+            new_user = Users.objects.create(
+                surname=self.validated_data.get('surname'),
+                name=self.validated_data.get('name'),
+                otch=self.validated_data.get('otch'),
+                phone=self.validated_data.get('phone'),
+                mail=self.validated_data.get('mail'),
+            )
+            return new_user
+
 
 class ImagesSerializer(serializers.ModelSerializer):
     photos = serializers.CharField()
     class Meta:
         model = Images
-        fields = ('name', 'photos')
-# Сериализер таблицы содержащей ссылки на оббъект таблицы Перевал и Фотографии
-class PerevalImagesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PerevalImages
-        fields = ('pereval', 'images')
+        fields = ('name', 'photos', 'pereval')
+
 
 class CoordsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coords
         fields = ('latitude', 'longitude', 'height')
 
+# сериализатор вложенной модели уровней сложности перевала
+class LevelsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Levels
+        fields = [
+            'winter',
+            'summer',
+            'autumn',
+            'spring',
+        ]
+
+
 class PerevalAddedSerializer(serializers.ModelSerializer):
     user = UsersSerializer(required=False)
     coord_id = CoordsSerializer(required=False)
     images = ImagesSerializer(required=False, many=True)
+    levels = LevelsSerializer(required=False)
     class Meta:
         model = PerevalAdded
         fields = ('status', 'beautyTitle', 'title', 'other_titles', 'connect', 'add_time', 'coord_id',
-                  'winter', 'summer', 'autumn', 'spring', 'user', 'images')
+                  'levels', 'user', 'images')
 
     def create(self, validated_data):
         # разбиваем словарь validated_data на таблицы
         user = validated_data.pop('user')
         coords = validated_data.pop('coord_id')
         images = validated_data.pop('images')
+        levels = validated_data.pop('levels')
         # Создаем нового автора или возвращаем модель существующего
         current_user = Users.objects.filter(mail=user['mail'])
         if current_user.exists():
@@ -49,11 +75,13 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
 
         coords = Coords.objects.create(**coords)
 
-        pereval_new = PerevalAdded.objects.create(**validated_data, author=user, coord_id=coords)
+        pereval_new = PerevalAdded.objects.create(**validated_data, author=user, coord_id=coords, levels=levels)
 
         if images:
-            img_new = Images.objects.create(**images)
-            PerevalImages.objects.create(pereval=pereval_new, images=img_new)
+            for imag in images:
+                name = imag.pop(name)
+                photos = photos.pop(photos)
+                Images.objects.create(pereval=pereval_new, name=name, photos=photos)
 
         return pereval_new
 
@@ -75,4 +103,3 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
                     }
                 )
         return data
-
