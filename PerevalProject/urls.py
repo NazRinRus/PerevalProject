@@ -24,7 +24,6 @@ router.register('submitData', PerevalAddedViewSet)
 router.register('users', UsersViewSet)
 router.register('coords', CoordViewSet)
 router.register('images', ImagesViewSet)
-router.register('perevalimages', PerevalImagesViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
