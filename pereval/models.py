@@ -58,10 +58,10 @@ class Coords(models.Model):
 
 #отдельная таблица, содержащая уровни сложности прохождения локации в разные времена года
 class Levels(models.Model):
-    winter = models.CharField('зима', max_length=2, choices=LEVELS)# уровень сложности прохождения локации зимой
-    summer = models.CharField('лето', max_length=2, choices=LEVELS)# уровень сложности прохождения локации летом
-    autumn = models.CharField('осень', max_length=2, choices=LEVELS)# уровень сложности прохождения локации осенью
-    spring = models.CharField('весна', max_length=2, choices=LEVELS)# уровень сложности прохождения локации весной
+    winter = models.CharField('зима', max_length=2, choices=LEVELS, default='')# уровень сложности прохождения локации зимой
+    summer = models.CharField('лето', max_length=2, choices=LEVELS, default='')# уровень сложности прохождения локации летом
+    autumn = models.CharField('осень', max_length=2, choices=LEVELS, default='')# уровень сложности прохождения локации осенью
+    spring = models.CharField('весна', max_length=2, choices=LEVELS, default='')# уровень сложности прохождения локации весной
 
     def __str__(self):
         return f'зима: {self.winter}, лето: {self.summer}, осень: {self.autumn}, весна: {self.spring}'
