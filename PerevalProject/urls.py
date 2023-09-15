@@ -20,10 +20,11 @@ from pereval.views import *
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register('submitData', PerevalAddedViewSet)
-router.register('users', UsersViewSet)
-router.register('coords', CoordViewSet)
-router.register('images', ImagesViewSet)
+router.register(r'submitData', PerevalAddedViewSet)
+router.register(r'users', UsersViewSet)
+router.register(r'coords', CoordViewSet)
+router.register(r'images', ImagesViewSet)
+router.register(r'levels', LevelsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

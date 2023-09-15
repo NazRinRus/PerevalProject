@@ -80,9 +80,7 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
         pereval_new = PerevalAdded.objects.create(**validated_data, author=user, coord_id=coords, levels=levels)
 
         if images:
-            print('test', images)
             for imag in images:
-                print('test', imag)
                 name = imag.pop('name')
                 photos = imag.pop('photos')
                 Images.objects.create(pereval=pereval_new, name=name, photos=photos)

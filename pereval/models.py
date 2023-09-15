@@ -77,7 +77,7 @@ class PerevalAdded(models.Model):
     connect = models.CharField('соединение', max_length=250)# какие локации соединяет (применимо к перевалу)
     add_time = models.DateTimeField(default=timezone.now, editable=False)#дата/время создания записи (не понял пользователь вручную создает или автоматическое поле при добавлении в БД)
     coord_id = models.OneToOneField(Coords, on_delete=models.CASCADE)# ссылка на объект с координатами локации. Зачем если связь один к одному?
-    author = models.ForeignKey(Users, on_delete=models.CASCADE)# автор статьи - ссылка на объект пользователей
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)# автор статьи - ссылка на объект пользователей
     levels = models.OneToOneField(Levels, on_delete=models.CASCADE)# ссылка на объект с уровнем сожности прохождения локации
 
 # класс фотографии добавленные пользователем

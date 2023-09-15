@@ -45,37 +45,37 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
     queryset = PerevalAdded.objects.all()
     serializer_class = PerevalAddedSerializer
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-    filterset_fields = ('author__mail',)
+    filterset_fields = ('user__mail',)
     http_method_names = ['get', 'post', 'head', 'patch', 'options']
 
-    # переопределяю метод, для вывода сообщения о результатах сохранения данных
-    # def create(self, request, *args, **kwargs):
-    #     serializer = PerevalAddedSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(
-    #             {
-    #                 'status': status.HTTP_200_OK,
-    #                 'message': 'Выполнено',
-    #                 'id': serializer.data['id']
-    #             }
-    #         )
-    #     if status.HTTP_400_BAD_REQUEST:
-    #         return Response(
-    #             {
-    #                 'status': status.HTTP_400_BAD_REQUEST,
-    #                 'message': 'не выполнено',
-    #                 'id': None
-    #             }
-    #         )
-    #     if status.HTTP_500_INTERNAL_SERVER_ERROR:
-    #         return Response(
-    #             {
-    #                 'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
-    #                 'message': 'Ошибка при выполнении операции',
-    #                 'id': None
-    #             }
-    #         )
+    #переопределяю метод, для вывода сообщения о результатах сохранения данных
+    def create(self, request, *args, **kwargs):
+        serializer = PerevalAddedSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    'status': status.HTTP_200_OK,
+                    'message': 'Выполнено',
+                    'id': serializer.data['id']
+                }
+            )
+        if status.HTTP_400_BAD_REQUEST:
+            return Response(
+                {
+                    'status': status.HTTP_400_BAD_REQUEST,
+                    'message': 'не выполнено',
+                    'id': None
+                }
+            )
+        if status.HTTP_500_INTERNAL_SERVER_ERROR:
+            return Response(
+                {
+                    'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    'message': 'Ошибка при выполнении операции',
+                    'id': None
+                }
+            )
 
     # даем возможность частично изменять перевал
     def partial_update(self, request, *args, **kwargs):
@@ -105,15 +105,15 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
                 }
             )
 
-    def get_queryset(self):
-        queryset = PerevalAdded.objects.all()
-        pereval_id = self.request.query_params.get('pereval_id', None)
-        user_id = self.request.query_params.get('user_id', None)
-        if pereval_id is not None:
-           queryset = queryset.filter(author__pereval_id=pereval_id)
-        if user_id is not None:
-            queryset = queryset.filter(author_id=user_id)
-            return queryset
+    # def get_queryset(self):
+    #     queryset = PerevalAdded.objects.all()
+    #     pereval_id = self.request.query_params.get('pereval_id', None)
+    #     user_id = self.request.query_params.get('user_id', None)
+    #     if pereval_id is not None:
+    #        queryset = queryset.filter(user__pereval_id=pereval_id)
+    #     if user_id is not None:
+    #         queryset = queryset.filter(author_id=user_id)
+    #         return queryset
 
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
@@ -127,5 +127,9 @@ class ImagesViewSet(viewsets.ModelViewSet):
 class CoordViewSet(viewsets.ModelViewSet):
     queryset = Coords.objects.all()
     serializer_class = CoordsSerializer
+
+class LevelsViewSet(viewsets.ModelViewSet):
+    queryset = Levels.objects.all()
+    serializer_class = LevelsSerializer
 
 
