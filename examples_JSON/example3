@@ -1,0 +1,26 @@
+{
+    "status": "new",
+    "beautyTitle": "poss",
+    "title": "Тестовый перевал",
+    "other_titles": "перевал",
+    "connect": "соединяет две равнины",
+    "coord_id": {
+        "latitude": "54.256",
+        "longitude": "74.596",
+        "height": "1200"
+    },
+    "levels": {
+        "winter": "1A",
+        "summer": "",
+        "autumn": "",
+        "spring": ""
+    },
+    "user": {
+        "mail": "User7@example.com",
+        "phone": "89258763215",
+        "name": "Ivan",
+        "surname": "Samoylov",
+        "otch": "Viktorovich"
+    },
+    "images": [{"photos":"/home/nazrinrus/Рабочий стол/фото для перевала/%D0%9E%D0%B7%D0%B5%D1%80%D0%BE.jpg", "name":"Седловина"}, {"photos":"/home/nazrinrus/Рабочий стол/фото для перевала/%D0%9E%D0%B7%D0%B5%D1%80%D0%BE.jpg", "name":"Седловина"}]
+}
