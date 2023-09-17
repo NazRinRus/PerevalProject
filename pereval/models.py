@@ -41,7 +41,7 @@ LEVELS = [
 
 # Собственный класс, хранящий информацию о пользователях
 class Users(models.Model):
-    mail = models.EmailField('почта', unique=True)# поле электронной почты, оно уникально, по нему проверяю ункикальность пользователей
+    mail = models.EmailField('почта', unique=False)# поле электронной почты, оно уникально, по нему проверяю ункикальность пользователей
     phone = models.CharField('телефон', max_length=15)
     name = models.CharField('имя', max_length=30)
     surname = models.CharField('фамилия', max_length=30)
