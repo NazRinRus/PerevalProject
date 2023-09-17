@@ -91,7 +91,7 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, pk=None, *args, **kwargs):
         pereval_new = self.get_object()
         if pereval_new.status == 'new':
-            serializer = PerevalAddedSerializer(pereval_new, data=request.data, partial=True)
+            serializer = PerevalDetailSerializer(pereval_new, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(

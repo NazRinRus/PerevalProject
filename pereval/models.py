@@ -84,7 +84,7 @@ class PerevalAdded(models.Model):
 class Images(models.Model):
     name = models.CharField(max_length=50)# название фотографии
     photos = models.ImageField('Фото', upload_to=get_image_path, blank=True, null=True)# объект фотографии
-    pereval = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE, default=0)# ссылка на объект с перевалом
+    pereval = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE, related_name='images', default=0)# ссылка на объект с перевалом
 
 # #таблица объединяющая объекты таблиц Перевал и Фотографии
 # class PerevalImages(models.Model):

@@ -91,6 +91,52 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
 
         return pereval_new
 
+    # def update(self, instance, validated_data):
+    #     # разбиваем словарь validated_data на таблицы
+    #     user = validated_data.pop('user')
+    #     coords = validated_data.pop('coord_id')
+    #     images = validated_data.pop('images')
+    #     levels = validated_data.pop('levels')
+    #     print('test', validated_data)
+    #     print('test', instance)
+    #     instance.coord_id.latitude = coords['latitude']
+    #     instance.coord_id.longitude = coords['longitude']
+    #     instance.coord_id.height = coords['height']
+    #     instance.save()
+        # Создаем нового автора или возвращаем модель существующего
+        # current_user = Users.objects.filter(mail=user['mail'])
+        # if current_user.exists():
+        #     user_serializers = UsersSerializer(data=user)
+        #     user_serializers.is_valid(raise_exception=True)
+        #     user = user_serializers.save()
+        #
+        # current_coords = Coords.objects.get(latitude=coords['latitude'], longitude=coords['longitude'], height=coords['height'])
+        # # if current_coords.exists():
+        # coords_serializers = CoordsSerializer(data=coords)
+        # coords_serializers.is_valid(raise_exception=True)
+        # coords = coords_serializers.save()
+        #
+        #
+        # current_pereval = PerevalAdded.objects.filter(coord_id=current_coords).first()
+        # print('test', current_pereval)
+        # current_levels = Levels.objects.filter(pk=current_pereval.levels.pk)
+        # print('test', current_levels)
+        # if current_levels.exists():
+        #     levels_serializers = LevelsSerializer(data=levels)
+        #     levels_serializers.is_valid(raise_exception=True)
+        #     levels = levels_serializers.save()
+
+
+        # pereval_new = current_pereval.save(validated_data)#, user=user, coord_id=coords, levels=levels)
+
+        # if images:
+        #     for imag in images:
+        #         name = imag.pop('name')
+        #         photos = imag.pop('photos')
+        #         Images.objects.create(pereval=pereval_new, name=name, photos=photos)
+
+        # return instance
+
     def validate(self, data):
         if self.instance is not None:
             instance_user = self.instance.user
@@ -110,32 +156,33 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
                 )
         return data
 
-# class PerevalDetailSerializer(WritableNestedModelSerializer):
-#     user = UsersSerializer()
-#     images = ImagesSerializer()
-#     coord_id = CoordsSerializer()
-#     levels = LevelsSerializer()
-#
-#     class Meta:
-#         model = PerevalAdded
-#         fields = ('status', 'beautyTitle', 'title', 'other_titles', 'connect', 'add_time', 'coord_id',
-#                   'levels', 'user', 'images')
-#
-#     def validate(self, data):
-#         if self.instance is not None:
-#             instance_user = self.instance.user
-#             data_user = data.get('user')
-#             user_fields_for_validation = [
-#                 instance_user.surname != data_user['surname'],
-#                 instance_user.name != data_user['name'],
-#                 instance_user.otch != data_user['otch'],
-#                 instance_user.phone != data_user['phone'],
-#                 instance_user.mail != data_user['mail'],
-#             ]
-#             if data_user is not None and any(user_fields_for_validation):
-#                 raise serializers.ValidationError(
-#                     {
-#                         'Отказано': 'Данные пользователя не могут быть изменены',
-#                     }
-#                 )
-#         return data
+class PerevalDetailSerializer(WritableNestedModelSerializer):
+    user = UsersSerializer()
+    images = ImagesSerializer()
+    coord_id = CoordsSerializer()
+    levels = LevelsSerializer()
+
+    class Meta:
+        model = PerevalAdded
+        fields = ('status', 'beautyTitle', 'title', 'other_titles', 'connect', 'add_time', 'coord_id',
+                  'levels', 'user', 'images')
+
+
+    def validate(self, data):
+        if self.instance is not None:
+            instance_user = self.instance.user
+            data_user = data.get('user')
+            user_fields_for_validation = [
+                instance_user.surname != data_user['surname'],
+                instance_user.name != data_user['name'],
+                instance_user.otch != data_user['otch'],
+                instance_user.phone != data_user['phone'],
+                instance_user.mail != data_user['mail'],
+            ]
+            if data_user is not None and any(user_fields_for_validation):
+                raise serializers.ValidationError(
+                    {
+                        'Отказано': 'Данные пользователя не могут быть изменены',
+                    }
+                )
+        return data
