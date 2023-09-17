@@ -117,13 +117,9 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = PerevalAdded.objects.all()
-        pereval_id = self.request.query_params.get('pereval_id', None)
-        user_id = self.request.query_params.get('user_id', None)
         user = self.request.query_params.get('user__email', None)
         if user is not None:
            queryset = queryset.filter(user__mail=user)
-        if user_id is not None:
-            queryset = queryset.filter(user_id=user_id)
         return queryset
 
 class UsersViewSet(viewsets.ModelViewSet):
