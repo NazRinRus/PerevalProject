@@ -1,5 +1,8 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
 from .models import *
+from drf_writable_nested import WritableNestedModelSerializer
 
 
 
@@ -10,7 +13,9 @@ class UsersSerializer(serializers.ModelSerializer):
     # при сохранении пользователя, проверяем по емайлу его наличие в БД, если есть то возвращаем уже сохраненного, инача сохраняем нового
     def save(self, **kwargs):
         self.is_valid()
+        print('тест сохранения')
         user = Users.objects.filter(mail=self.validated_data.get('mail'))
+        print('test', self.validated_data.get('mail'))
         if user.exists():
             return user.first()
         else:
@@ -105,3 +110,33 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
                     }
                 )
         return data
+
+# class PerevalDetailSerializer(WritableNestedModelSerializer):
+#     user = UsersSerializer()
+#     images = ImagesSerializer()
+#     coord_id = CoordsSerializer()
+#     levels = LevelsSerializer()
+#
+#     class Meta:
+#         model = PerevalAdded
+#         fields = ('status', 'beautyTitle', 'title', 'other_titles', 'connect', 'add_time', 'coord_id',
+#                   'levels', 'user', 'images')
+#
+#     def validate(self, data):
+#         if self.instance is not None:
+#             instance_user = self.instance.user
+#             data_user = data.get('user')
+#             user_fields_for_validation = [
+#                 instance_user.surname != data_user['surname'],
+#                 instance_user.name != data_user['name'],
+#                 instance_user.otch != data_user['otch'],
+#                 instance_user.phone != data_user['phone'],
+#                 instance_user.mail != data_user['mail'],
+#             ]
+#             if data_user is not None and any(user_fields_for_validation):
+#                 raise serializers.ValidationError(
+#                     {
+#                         'Отказано': 'Данные пользователя не могут быть изменены',
+#                     }
+#                 )
+#         return data

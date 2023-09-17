@@ -54,7 +54,6 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
         pereval = get_object_or_404(queryset, pk=pk)
         images_obj = Images.objects.filter(pereval=pereval)
         images_ser = ImagesSerializer(images_obj, many=True).data
-        print('test', images_ser)
         return Response({'pereval': self.serializer_class(pereval).data, 'images': images_ser})
 
 
@@ -120,8 +119,9 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
         queryset = PerevalAdded.objects.all()
         pereval_id = self.request.query_params.get('pereval_id', None)
         user_id = self.request.query_params.get('user_id', None)
-        if pereval_id is not None:
-           queryset = queryset.filter(user__pereval_id=pereval_id)
+        user = self.request.query_params.get('user__email', None)
+        if user is not None:
+           queryset = queryset.filter(user__mail=user)
         if user_id is not None:
             queryset = queryset.filter(user_id=user_id)
         return queryset
