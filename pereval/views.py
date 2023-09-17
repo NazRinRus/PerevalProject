@@ -67,7 +67,7 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
                 {
                     'status': status.HTTP_200_OK,
                     'message': 'Выполнено',
-                    'id': serializer.data['id']
+                    'id': serializer.data[id]
                 }
             )
         if status.HTTP_400_BAD_REQUEST:
@@ -89,7 +89,7 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
 
 
     # даем возможность частично изменять перевал
-    def partial_update(self, request, *args, **kwargs):
+    def partial_update(self, request, pk=None, *args, **kwargs):
         pereval_new = self.get_object()
         if pereval_new.status == 'new':
             serializer = PerevalAddedSerializer(pereval_new, data=request.data, partial=True)

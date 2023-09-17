@@ -77,7 +77,7 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
 
         levels = Levels.objects.create(**levels)
 
-        pereval_new = PerevalAdded.objects.create(**validated_data, author=user, coord_id=coords, levels=levels)
+        pereval_new = PerevalAdded.objects.create(**validated_data, user=user, coord_id=coords, levels=levels)
 
         if images:
             for imag in images:
