@@ -86,13 +86,4 @@ class Images(models.Model):
     photos = models.ImageField('Фото', upload_to=get_image_path, blank=True, null=True)# объект фотографии
     pereval = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE, related_name='images', default=0)# ссылка на объект с перевалом
 
-# #таблица объединяющая объекты таблиц Перевал и Фотографии
-# class PerevalImages(models.Model):
-#     pereval = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE, default=0)  # ссылка на объект локации
-#     images = models.ForeignKey(Images, on_delete=models.CASCADE, default=0)  # ссылка на объект фотографии
-#
-# # данные таблицы были в ТЗ не понял зачем, видимо для дальнейшей работы, пока не используются
-# class PerevalAreas(models.Model):
-#
-#     id_parent = models.IntegerField(blank=True)
-#     title = models.TextField()
+

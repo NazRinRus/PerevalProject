@@ -89,11 +89,8 @@ python3 manage.py startapp pereval
     connect = models.CharField('соединение', max_length=250)# какие локации соединяет (применимо к перевалу)
     add_time = models.DateTimeField(default=timezone.now, editable=False)#дата/время создания записи (не понял пользователь вручную создает или автоматическое поле при добавлении в БД)
     coord_id = models.OneToOneField(Coords, on_delete=models.CASCADE)# ссылка на объект с координатами локации. Зачем если связь один к одному?
-    winter = models.CharField('зима', max_length=2, choices=LEVELS)# уровень сложности прохождения локации зимой
-    summer = models.CharField('лето', max_length=2, choices=LEVELS)# уровень сложности прохождения локации летом
-    autumn = models.CharField('осень', max_length=2, choices=LEVELS)# уровень сложности прохождения локации осенью
-    spring = models.CharField('весна', max_length=2, choices=LEVELS)# уровень сложности прохождения локации весной
-    author = models.ForeignKey(Users, on_delete=models.CASCADE)# автор статьи - ссылка на объект пользователей`
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)# автор статьи - ссылка на объект пользователей
+    levels = models.OneToOneField(Levels, on_delete=models.CASCADE)# ссылка на объект с уровнем сожности прохождения локации`
 
 *Модель User - основные данные о туристе:*
 
@@ -118,13 +115,19 @@ python3 manage.py startapp pereval
 
 `class Images(models.Model):
     name = models.CharField(max_length=50)# название фотографии
-    photos = models.ImageField('Фото', upload_to=get_image_path, blank=True, null=True)# объект фотографии`
+    photos = models.ImageField('Фото', upload_to=get_image_path, blank=True, null=True)# объект фотографии
+    pereval = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE, related_name='images', default=0)# ссылка на объект с перевалом`
 
-*Класс PerevalImages таблица объединяющая объекты таблиц PerevalAdded и Images*
+*класс Levels уровень сложности прохождения локации*
 
-`class PerevalImages(models.Model):
-    pereval = models.ForeignKey(PerevalAdded, on_delete=models.CASCADE, default=0)  # ссылка на объект локации
-    images = models.ForeignKey(Images, on_delete=models.CASCADE, default=0)  # ссылка на объект фотографии`
+`class Levels(models.Model):
+    winter = models.CharField('зима', max_length=2, choices=LEVELS, default='')# уровень сложности прохождения локации зимой
+    summer = models.CharField('лето', max_length=2, choices=LEVELS, default='')# уровень сложности прохождения локации летом
+    autumn = models.CharField('осень', max_length=2, choices=LEVELS, default='')# уровень сложности прохождения локации осенью
+    spring = models.CharField('весна', max_length=2, choices=LEVELS, default='')# уровень сложности прохождения локации весной`
+
+    def __str__(self):
+        return f'зима: {self.winter}, лето: {self.summer}, осень: {self.autumn}, весна: {self.spring}'
 
 # 8 Проектирование Views и Serializers
 
@@ -137,7 +140,7 @@ python3 manage.py startapp pereval
 api/v1/название_модели/pk - для редактирования, удаления.
 
 Для реализации метода submitData используются классы на основе viewsets.ModelViewSet,
-доступные по запросу api/v2/название_модели
+доступные по запросу api/v2/submitData
 
 Реализация метода submitData заключается в том, что турист (клиентское приложение)
 отправляет POST запрос в формате JSON содержащий все необходимые данные.
@@ -157,5 +160,81 @@ coords = Coords.objects.create(**coords)`
 затем в основную таблицу PerevalAdded добаляются оставшиеся данные и ссылки на побочные объекты таблиц
 
 `pereval_new = PerevalAdded.objects.create(**validated_data, images=images, author=user, coord_id=coords)`
+
+Данная процедура реализуется в методе create сериализатора PerevalAddedSerializer(serializers.ModelSerializer)::
+
+    def create(self, validated_data):
+        # разбиваем словарь validated_data на таблицы
+        user = validated_data.pop('user')
+        coords = validated_data.pop('coord_id')
+        images = validated_data.pop('images')
+        levels = validated_data.pop('levels')
+        # Создаем нового автора или возвращаем модель существующего
+        current_user = Users.objects.filter(mail=user['mail'])
+        if current_user.exists():
+            user_serializers = UsersSerializer(data=user)
+            user_serializers.is_valid(raise_exception=True)
+            user = user_serializers.save()
+        else:
+            user = Users.objects.create(**user)
+
+        coords = Coords.objects.create(**coords)
+
+        levels = Levels.objects.create(**levels)
+
+        pereval_new = PerevalAdded.objects.create(**validated_data, user=user, coord_id=coords, levels=levels)
+
+        if images:
+            for imag in images:
+                name = imag.pop('name')
+                photos = imag.pop('photos')
+                Images.objects.create(pereval=pereval_new, name=name, photos=photos)
+
+        return pereval_new
+
+Получение списка загруженных данных по локациям осуществляется по GET запросу на адрес api/v2/submitData, по средствам
+встроенного представления viewsets.ModelViewSet.
+
+Получение конкретной записи по первичному ключу осуществляется по GET запросу на адрес api/v2/submitData/pk, путем 
+переопределения метода retrieve() в классе PerevalAddedViewSet(viewsets.ModelViewSet)
+
+    def retrieve(self, request, pk=None):
+        queryset = self.queryset
+        pereval = get_object_or_404(queryset, pk=pk)
+        images_obj = Images.objects.filter(pereval=pereval)
+        images_ser = ImagesSerializer(images_obj, many=True).data
+        return Response({'pereval': self.serializer_class(pereval).data, 'images': images_ser})
+
+т.е. получаю queryset содержащий все объекты модели PerevalAdded, далее получаем конкретный объект по переданному в метод первичному ключю
+при помощи метода get_object_or_404(queryset, pk=pk). Фильтрую объекты модели Images по полю pereval, равному полученному объекту PerevalAdded
+images_obj = Images.objects.filter(pereval=pereval), после чего провожу сериализацию images_ser = ImagesSerializer(images_obj, many=True).data.
+Возвращаю сериализованные данные объекта PerevalAdded и полученные данные объекта Images, сформированные в формат JSON
+
+
+Изменение конкретного объекта модели PerevalAdded осуществляется patch запросом на адрес api/v2/submitData/pk, реализуется встроенными методами инструмента 
+WritableNestedModelSerializer из пакета drf-writable-nested
+
+pip install drf-writable-nested
+
+Получение записей конкретного автора, осуществляется по GET запросу, содержащему параметр 'user__mail' равный электронной почте автора, на адрес
+api/v2/submitData/
+
+api/v2/submitData/?user__mail=User6@gmail.com
+
+реализуется в методе get_queryset(self) класса PerevalAddedViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        queryset = PerevalAdded.objects.all()
+        user = self.request.query_params.get('user__email', None)
+        if user is not None:
+           queryset = queryset.filter(user__mail=user)
+        return queryset
+
+получаю queryset равный всем объектам модели PerevalAdded - queryset = PerevalAdded.objects.all() , получаю mail автора из переданного GET запросом параметра 'user__email'
+user = self.request.query_params.get('user__email', None), если параметр в запросе существует, то
+фильтрую полученный queryset по связанному полю user - queryset = queryset.filter(user__mail=user).
+Передаю queryset.
+
+
 
 
