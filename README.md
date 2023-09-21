@@ -239,9 +239,11 @@ user = self.request.query_params.get('user__email', None), если параме
 
 1) При использовании переопределенного метода def partial_update(self, request, pk=None, *args, **kwargs) в классе представления PerevalAddedViewSet(viewsets.ModelViewSet)
 сериализатор class PerevalDetailSerializer(WritableNestedModelSerializer), в основной таблице данные обновляются, а в побочных создаются новые записи
+
 Решение: прописал вручную метод обновление в сериализаторе PerevalAddedSerializer(serializers.ModelSerializer), метод update, теперь все 
 основные функции выполняются в этом сериализаторе, надобность в PerevalDetailSerializer исчезла
 2) В ТЗ не указан такой момент - при редактировании записи pereval, если количество изображений в JSON не совпадает с имеющимися, как действовать? Прежние изображения, связанные с перевалом удаляю и привязываю к ней новые, или к предыдущим добавляю новые?
+
 Решение: удаляю все старые изображения, привязанные к перевалу, загружаю новые с JSON
 
 # Комментарии:
