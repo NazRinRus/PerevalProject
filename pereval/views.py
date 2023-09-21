@@ -1,9 +1,7 @@
 import django_filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from django.shortcuts import render
 from rest_framework import generics
-from .models import *
 from .serializers import *
 from  rest_framework import viewsets, status
 
@@ -115,7 +113,7 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
                     'message': f'Текущий статус: {pereval_new.get_status_display()}, данные не могут быть изменены!'
                 }
             )
-
+# Меняем кверисет под фильтрацию по электронной почте автора
     def get_queryset(self):
         queryset = PerevalAdded.objects.all()
         user = self.request.query_params.get('user__email', None)
