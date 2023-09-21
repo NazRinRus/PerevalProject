@@ -235,6 +235,10 @@ user = self.request.query_params.get('user__email', None), если параме
 фильтрую полученный queryset по связанному полю user - queryset = queryset.filter(user__mail=user).
 Передаю queryset.
 
+# Проблемы:
+
+1) При использовании переопределенного метода def partial_update(self, request, pk=None, *args, **kwargs) в классе представления PerevalAddedViewSet(viewsets.ModelViewSet)
+сериализатор class PerevalDetailSerializer(WritableNestedModelSerializer), в основной таблице данные обновляются, а в побочных создаются новые записи
 
 
 

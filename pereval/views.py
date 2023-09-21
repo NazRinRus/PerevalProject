@@ -89,6 +89,7 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
 
     # даем возможность частично изменять перевал
     def partial_update(self, request, pk=None, *args, **kwargs):
+        print('тест вьюшки')
         pereval_new = self.get_object()
         if pereval_new.status == 'new':
             serializer = PerevalDetailSerializer(pereval_new, data=request.data, partial=True)
