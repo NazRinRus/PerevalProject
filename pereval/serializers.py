@@ -91,19 +91,51 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
 
         return pereval_new
 
-    # def update(self, instance, validated_data):
-    #     # разбиваем словарь validated_data на таблицы
-    #     user = validated_data.pop('user')
-    #     coords = validated_data.pop('coord_id')
-    #     images = validated_data.pop('images')
-    #     levels = validated_data.pop('levels')
-    #     print('test', validated_data)
-    #     print('test', instance)
-    #     instance.coord_id.latitude = coords['latitude']
-    #     instance.coord_id.longitude = coords['longitude']
-    #     instance.coord_id.height = coords['height']
-    #     instance.save()
-        # Создаем нового автора или возвращаем модель существующего
+    def update(self, instance, validated_data):
+        # разбиваем словарь validated_data на таблицы
+        user_data = validated_data.pop('user')
+        coords_data = validated_data.pop('coord_id')
+        images_data = validated_data.pop('images')
+        levels_data = validated_data.pop('levels')
+        print('test update', validated_data)
+        print('test', instance)
+        # получаю объекты связанных с текущим объектом таблиц
+        user = instance.user
+        coords = instance.coord_id
+        levels = instance.levels
+        # вношу изменения в поля основной таблицы
+        instance.beautyTitle = validated_data.get('beautyTitle', instance.beautyTitle)
+        instance.title = validated_data.get('title', instance.title)
+        instance.other_titles = validated_data.get('other_titles', instance.other_titles)
+        instance.connect = validated_data.get('connect', instance.connect)
+        instance.save()
+        # вношу изменения в таблицу координат
+        coords.latitude = coords_data.get('latitude', coords.latitude)
+        coords.longitude = coords_data.get('longitude', coords.longitude)
+        coords.height = coords_data.get('height', coords.height)
+        coords.save()
+        # вношу изменения в таблицу уровней
+        levels.winter = levels_data.get('winter', levels.winter)
+        levels.summer = levels_data.get('summer', levels.summer)
+        levels.autumn = levels_data.get('autumn', levels.autumn)
+        levels.spring = levels_data.get('spring', levels.spring)
+        levels.save()
+        # получаю объекты модели Images, связанные с текущим объектом модели PerevalAdded (а надо ли? удалить и вписать новые или к старым добавить новые?)
+        images = Images.objects.filter(pereval=instance)
+        # удаляю старые объекты
+        images.delete()
+        # записываю новые объекты изображения
+        if images_data:
+            for imag in images_data:
+                name = imag.pop('name')
+                photos = imag.pop('photos')
+                Images.objects.create(pereval=instance, name=name, photos=photos)
+
+        # instance.coord_id.latitude = coords['latitude']
+        # instance.coord_id.longitude = coords['longitude']
+        # instance.coord_id.height = coords['height']
+        # instance.save()
+        # #Создаем нового автора или возвращаем модель существующего
         # current_user = Users.objects.filter(mail=user['mail'])
         # if current_user.exists():
         #     user_serializers = UsersSerializer(data=user)
@@ -125,17 +157,17 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
         #     levels_serializers = LevelsSerializer(data=levels)
         #     levels_serializers.is_valid(raise_exception=True)
         #     levels = levels_serializers.save()
-
-
+        #
+        #
         # pereval_new = current_pereval.save(validated_data)#, user=user, coord_id=coords, levels=levels)
-
+        #
         # if images:
         #     for imag in images:
         #         name = imag.pop('name')
         #         photos = imag.pop('photos')
         #         Images.objects.create(pereval=pereval_new, name=name, photos=photos)
 
-        # return instance
+        return instance
 
     def validate(self, data):
         if self.instance is not None:
@@ -157,6 +189,7 @@ class PerevalAddedSerializer(serializers.ModelSerializer):
         return data
 
 class PerevalDetailSerializer(WritableNestedModelSerializer):
+
     user = UsersSerializer()
     images = ImagesSerializer()
     coord_id = CoordsSerializer()

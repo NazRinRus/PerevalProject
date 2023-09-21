@@ -92,7 +92,7 @@ class PerevalAddedViewSet(viewsets.ModelViewSet):
         print('тест вьюшки')
         pereval_new = self.get_object()
         if pereval_new.status == 'new':
-            serializer = PerevalDetailSerializer(pereval_new, data=request.data, partial=True)
+            serializer = PerevalAddedSerializer(pereval_new, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(
