@@ -249,5 +249,91 @@ user = self.request.query_params.get('user__email', None), если параме
 # Комментарии:
 Все требуемые в ТЗ функции выполняются в api/v2/submitData, все функции доступные по api/v1/, с представлениями и сериалайзерами не нужны, но пока пусть будут
 
+# Развертывание приложения на хостинге:
 
+Опубликованное на хостинге приложение использует БД sqlite, рабочий проект использует postgerql 
 
+Хостинг: [pythonanywhere.com](www.pythonanywhere.com)
+
+Ссылка на проект: [NazRinRus.pythonanywhere.com](NazRinRus.pythonanywhere.com)
+# Зависимости:
+
+1. pip install django
+2. pip install djangorestframework
+3. pip install django-filter
+
+# Примеры:
+
+1) Пример добавления новой записи POST запросом по адресу `api/v2/submitData `:
+
+`{
+    "status": "new",
+    "beautyTitle": "poss",
+    "title": "Тестовый перевал",
+    "other_titles": "перевал",
+    "connect": "соединяет две равнины",
+    "coord_id": {
+        "latitude": "54.256",
+        "longitude": "74.596",
+        "height": "1200"
+    },
+    "levels": {
+        "winter": "1A",
+        "summer": "",
+        "autumn": "",
+        "spring": ""
+    },
+    "user": {
+        "mail": "User7@example.com",
+        "phone": "89258763215",
+        "name": "Ivan",
+        "surname": "Samoylov",
+        "otch": "Viktorovich"
+    },
+    "images": [{"photos":"/home/nazrinrus/Рабочий стол/фото для перевала/%D0%9E%D0%B7%D0%B5%D1%80%D0%BE.jpg", "name":"Седловина"}, {"photos":"/home/nazrinrus/Рабочий стол/фото для перевала/%D0%9E%D0%B7%D0%B5%D1%80%D0%BE.jpg", "name":"Седловина"}]
+}`
+
+2) Пример редактирования конкретной записи PATCH запросом по адресу `api/v2/submitData/<pk:int> `: 
+Подается аналогичный добавлению новой записи JSON запрос
+3) Пример JSON получения конкретной записи GET запросом по адресу `api/v2/submitData/<pk:int> `:
+
+`{
+    "pereval": {
+        "status": "new",
+        "beautyTitle": "poss",
+        "title": "Третий Тестовый перевал",
+        "other_titles": "изменил название",
+        "connect": "изменил текст соединяет две равнины",
+        "add_time": "2023-09-17T07:25:02.737496Z",
+        "coord_id": {
+            "latitude": 50.256,
+            "longitude": 77.596,
+            "height": 1300
+        },
+        "levels": {
+            "winter": "1A",
+            "summer": "1A",
+            "autumn": "1A",
+            "spring": ""
+        },
+        "user": {
+            "mail": "User9@example.com",
+            "phone": "89258763215",
+            "name": "Pavel",
+            "surname": "Ivanov",
+            "otch": "Petrovich"
+        },
+        "images": [
+            {
+                "name": "Седловина",
+                "photos": "/home/nazrinrus/Рабочий стол/фото для перевала/%D0%9E%D0%B7%D0%B5%D1%80%D0%BE.jpg",
+                "pereval": 30
+            },
+            {
+                "name": "Седловина",
+                "photos": "/home/nazrinrus/Рабочий стол/фото для перевала/%D0%9E%D0%B7%D0%B5%D1%80%D0%BE.jpg",
+                "pereval": 30
+            }
+        ]
+    }
+}`
