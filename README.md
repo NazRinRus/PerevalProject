@@ -262,7 +262,7 @@ user = self.request.query_params.get('user__email', None), если параме
 2. pip install djangorestframework
 3. pip install django-filter
 
-# Примеры:
+# Примеры JSON:
 
 1) Пример добавления новой записи POST запросом по адресу `api/v2/submitData `:
 
